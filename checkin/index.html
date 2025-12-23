@@ -1,1 +1,45 @@
-adiciona pagina de check-in
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Check-in</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <h1>Check-in</h1>
+
+    <form id="checkinForm">
+
+      <label>Evento</label>
+      <select id="event" required>
+        <option value="">Selecione o evento</option>
+        <option value="1">Festa de Aniversário</option>
+        <option value="2">Evento Corporativo</option>
+      </select>
+
+      <label>Nome do convidado</label>
+      <input
+        type="text"
+        id="name"
+        placeholder="Digite o nome"
+        required
+      />
+
+      <label class="checkbox">
+        <input type="checkbox" id="companion" />
+        Acompanhante
+      </label>
+
+      <button type="submit">Confirmar Check-in</button>
+    </form>
+
+    <p id="message"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
