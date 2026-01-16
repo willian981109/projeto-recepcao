@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const { loginService } = require("../services/auth.service");
 
 function login(req, res) {
@@ -11,10 +12,25 @@ function login(req, res) {
 
   loginService(username, password, (err, result) => {
     if (err) {
-      return res.status(401).json({ error: err.message || err });
+      return res.status(401).json({ error: err });
     }
 
-    res.json(result);
+    const { user } = result;
+
+    // 🔐 TOKEN (8 HORAS)
+    const token = jwt.sign(
+      {
+        id: user.id,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "8h" }
+    );
+
+    res.json({
+      token,
+      user
+    });
   });
 }
 

@@ -1,21 +1,28 @@
 const db = require("../database/connection");
 
 function loginService(username, password, callback) {
-  const query = `
-    SELECT id, username
+  db.get(
+    `
+    SELECT id, username, role
     FROM users
     WHERE username = ? AND password = ?
-  `;
+    `,
+    [username, password],
+    (err, user) => {
+      if (err) {
+        return callback("Erro ao acessar o banco de dados");
+      }
 
-  db.get(query, [username, password], (err, user) => {
-    if (err) return callback(err);
-    if (!user) return callback({ message: "Usuário ou senha inválidos" });
+      if (!user) {
+        return callback("Usuário ou senha inválidos");
+      }
 
-    callback(null, {
-      message: "Login realizado com sucesso",
-      user
-    });
-  });
+      callback(null, {
+        success: true,
+        user
+      });
+    }
+  );
 }
 
 module.exports = { loginService };

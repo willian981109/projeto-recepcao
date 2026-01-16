@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Controle de Entradas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    .info {
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-right: 10px;
+      background: #3498db;
+      color: #fff;
+    }
+
+    .box {
+      background: #fff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    .fora {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    .footer {
+      font-size: 12px;
+      color: #777;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📋 Controle de Entradas do Evento</h1>
+
+  <div class="info">
+    <span id="eventoNome"></span><br /><br />
+    <span class="badge" id="capacidade"></span>
+    <span class="badge" id="totalPresentes"></span>
+  </div>
+
+  <div class="box">
+    <h3>Pessoas que já entraram (estavam na lista)</h3>
+    <ul id="listaEntradas"></ul>
+  </div>
+
+  <div class="box">
+    <h3>Entradas sem nome na lista</h3>
+    <ul id="listaFora"></ul>
+  </div>
+
+  <div class="footer">
+    Atualização automática a cada 5 segundos
+  </div>
+
+  <script src="excedentes.js"></script>
+</body>
+</html>

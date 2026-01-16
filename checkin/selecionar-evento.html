@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Selecionar Evento</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .event-list {
+      max-width: 500px;
+      margin: 30px auto;
+    }
+
+    .event {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .event:hover {
+      background: #f0f8ff;
+    }
+
+    .event strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .event span {
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Selecione o evento</h1>
+
+  <div class="event-list" id="eventList">
+    Carregando eventos...
+  </div>
+
+ <script src="/checkin/selecionar-evento.js"></script>
+
+
+
+</body>
+</html>

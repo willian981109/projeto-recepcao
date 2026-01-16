@@ -1,21 +1,70 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
 
-const {
-  listGuests,
-  createGuest,
-  checkinGuest
-} = require("../controllers/guests.controller");
+const authorize = require("../middlewares/authorize");
+const guestsController = require("../controllers/guests.controller");
 
-// Listar convidados de um evento
-router.get("/events/:eventId/guests", listGuests);
+const upload = multer({ dest: "uploads/" });
 
-// Criar convidado para um evento
-router.post("/events/:eventId/guests", createGuest);
+/**
+ * CHECK-IN
+ * ADMIN e RECEPÇÃO
+ */
+router.post(
+  "/checkin",
+  authorize(["RECEPCAO", "ADMIN"]),
+  guestsController.checkin
+);
 
-// Check-in do convidado
-router.post("/:id/checkin", checkinGuest);
+router.post(
+  "/checkin/override",
+  authorize(["ADMIN", "RECEPCAO"]),
+  guestsController.checkinOverride
+);
+
+
+/**
+ * LISTAR CONVIDADOS DO EVENTO
+ * ADMIN e RECEPÇÃO
+ */
+router.get(
+  "/events/:eventId/guests",
+  authorize(["ADMIN", "RECEPCAO"]),
+  guestsController.listGuests
+);
+
+/**
+ * CRIAR CONVIDADO MANUAL
+ * ADMIN e RECEPÇÃO
+ */
+router.post(
+  "/events/:eventId/guests",
+  authorize(["ADMIN", "RECEPCAO"]),
+  guestsController.createGuest
+);
+
+
+/**
+ * TOTAL DE CONVIDADOS DO EVENTO
+ * ADMIN, RECEPÇÃO e CONTADOR
+ */
+router.get(
+  "/events/:eventId/total",
+  authorize(["ADMIN", "RECEPCAO", "CONTADOR"]),
+  guestsController.totalGuestsByEvent
+);
+
+/**
+ * IMPORTAR CONVIDADOS VIA CSV
+ * SOMENTE ADMIN
+ */
+router.post(
+  "/import/:eventId",
+  authorize(["ADMIN"]),
+  upload.single("file"),
+  guestsController.importGuests
+);
 
 module.exports = router;
-
 

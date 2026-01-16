@@ -1,25 +1,36 @@
+const normalizarNome = require("../utils/normalizarNome");
 const db = require("../database/connection");
+const { checkinGuestService } = require("../services/checkin.service");
+const fs = require("fs");
+const csv = require("csv-parser");
 
+// ===============================
 // LISTAR CONVIDADOS POR EVENTO
+// ===============================
 function listGuests(req, res) {
   const { eventId } = req.params;
 
-  const query = `
-    SELECT * FROM guests
+  db.all(
+    `
+    SELECT *
+    FROM guests
     WHERE event_id = ?
     ORDER BY created_at DESC
-  `;
-
-  db.all(query, [eventId], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+    `,
+    [Number(eventId)],
+    (err, rows) => {
+      if (err) {
+        console.error("LIST GUESTS ERRO:", err);
+        return res.status(500).json({ error: err.message });
+      }
+      res.json(rows);
     }
-
-    res.json(rows);
-  });
+  );
 }
 
-// CRIAR CONVIDADO
+// ===============================
+// CRIAR CONVIDADO MANUAL
+// ===============================
 function createGuest(req, res) {
   const { eventId } = req.params;
   const { name, document, has_companion, children_count } = req.body;
@@ -28,24 +39,31 @@ function createGuest(req, res) {
     return res.status(400).json({ error: "Nome do convidado é obrigatório" });
   }
 
-  const query = `
-    INSERT INTO guests (
-      event_id, name, document, has_companion, children_count
-    )
-    VALUES (?, ?, ?, ?, ?)
-  `;
+  const nomeNormalizado = normalizarNome(name);
 
   db.run(
-    query,
-    [
-      eventId,
+    `
+    INSERT INTO guests (
+      event_id,
       name,
+      nome_normalizado,
+      document,
+      has_companion,
+      children_count
+    )
+    VALUES (?, ?, ?, ?, ?, ?)
+    `,
+    [
+      Number(eventId),
+      name,
+      nomeNormalizado,
       document || null,
-      has_companion || 0,
-      children_count || 0
+      has_companion ? 1 : 0,
+      Number(children_count) || 0
     ],
     function (err) {
       if (err) {
+        console.error("CREATE GUEST ERRO:", err);
         return res.status(500).json({ error: err.message });
       }
 
@@ -57,28 +75,221 @@ function createGuest(req, res) {
   );
 }
 
-module.exports = {
-  listGuests,
-  createGuest
-};
+// ===============================
+// CHECK-IN PADRÃO (CONVIDADO DA LISTA)
+// ===============================
+function checkin(req, res) {
+  const { nome, evento_id } = req.body;
+  const eventId = Number(evento_id);
 
-const { checkinGuestService } = require("../services/checkin.service");
+  if (!nome || !eventId) {
+    return res.status(400).json({
+      error: "Nome e evento são obrigatórios"
+    });
+  }
 
-function checkinGuest(req, res) {
-  const { id } = req.params;
+  const nomeNormalizado = normalizarNome(nome);
 
-  checkinGuestService(id, (err, result) => {
-    if (err) {
-      return res.status(400).json({ error: err.message || err });
-    }
+  db.serialize(() => {
+    // 1️⃣ buscar convidado
+db.get(
+  `
+  SELECT id
+  FROM guests
+  WHERE nome_normalizado = ?
+    AND event_id = ?
+    AND origem_lista = 1
+  `,
+  [nomeNormalizado, eventId],
+  (err, guest) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
 
-    res.json(result);
+        if (!guest) {
+          return res.json({
+            success: false,
+            type: "NOT_IN_LIST"
+          });
+        }
+
+        // 2️⃣ buscar total atual + capacidade
+        db.get(
+          `
+          SELECT 
+            (SELECT COUNT(*) FROM event_entries WHERE event_id = ?) AS total,
+            (SELECT max_capacity FROM events WHERE id = ?) AS capacidade
+          `,
+          [eventId, eventId],
+          (err, info) => {
+            if (err) {
+              return res.status(500).json({ error: err.message });
+            }
+
+            const excedente = info.total >= info.capacidade ? 1 : 0;
+
+            // 3️⃣ registrar entrada
+            db.run(
+              `
+              INSERT INTO event_entries (event_id, guest_id, fora_lista, excedente)
+              VALUES (?, ?, 0, ?)
+              `,
+              [eventId, guest.id, excedente],
+              (err) => {
+                if (err) {
+                  return res.status(500).json({ error: err.message });
+                }
+
+                res.json({
+                  success: true,
+                  type: "CHECKED_OK",
+                  excedente: Boolean(excedente)
+                });
+              }
+            );
+          }
+        );
+      }
+    );
   });
+}
+
+// ===============================
+// CHECK-IN FORA DA LISTA (PROSSEGUIR)
+// ===============================
+function checkinOverride(req, res) {
+  const { nome, evento_id } = req.body;
+  const eventId = Number(evento_id);
+  const nomeNormalizado = normalizarNome(nome);
+
+  db.serialize(() => {
+    // 1️⃣ criar convidado fora da lista
+  db.run(
+  `
+  INSERT INTO guests (event_id, name, nome_normalizado, origem_lista)
+  VALUES (?, ?, ?, 0)
+  `,
+  [eventId, nome, nomeNormalizado],
+  function () {
+        const guestId = this.lastID;
+
+        // 2️⃣ buscar total + capacidade
+        db.get(
+          `
+          SELECT 
+            (SELECT COUNT(*) FROM event_entries WHERE event_id = ?) AS total,
+            (SELECT max_capacity FROM events WHERE id = ?) AS capacidade
+          `,
+          [eventId, eventId],
+          (err, info) => {
+            if (err) {
+              return res.status(500).json({ error: err.message });
+            }
+
+            const excedente = info.total >= info.capacidade ? 1 : 0;
+
+            // 3️⃣ registrar entrada
+            db.run(
+              `
+              INSERT INTO event_entries (event_id, guest_id, fora_lista, excedente)
+              VALUES (?, ?, 1, ?)
+              `,
+              [eventId, guestId, excedente],
+              () => {
+                res.json({
+                  success: true,
+                  type: "CHECKED_OVERRIDE",
+                  excedente: Boolean(excedente)
+                });
+              }
+            );
+          }
+        );
+      }
+    );
+  });
+}
+
+// ===============================
+// TOTAL DE ENTRADAS
+// ===============================
+function totalGuestsByEvent(req, res) {
+  const { eventId } = req.params;
+
+  db.get(
+    `
+    SELECT COUNT(*) AS total
+    FROM event_entries
+    WHERE event_id = ?
+    `,
+    [Number(eventId)],
+    (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      res.json({
+        event_id: Number(eventId),
+        total: row.total
+      });
+    }
+  );
+}
+
+// ===============================
+// IMPORTAR CONVIDADOS CSV
+// ===============================
+function importGuests(req, res) {
+  const { eventId } = req.params;
+
+  if (!req.file) {
+    return res.status(400).json({ error: "Arquivo CSV não enviado" });
+  }
+
+  const filePath = req.file.path;
+  const guests = [];
+
+  fs.createReadStream(filePath)
+    .pipe(csv({ headers: false }))
+    .on("data", (row) => {
+      const nome = Object.values(row)[0];
+      if (nome) {
+        guests.push({
+          event_id: Number(eventId),
+          name: nome.trim(),
+          nome_normalizado: normalizarNome(nome)
+        });
+      }
+    })
+    .on("end", () => {
+      db.serialize(() => {
+        const stmt = db.prepare(
+          `
+          INSERT INTO guests (event_id, name, nome_normalizado)
+          VALUES (?, ?, ?)
+          `
+        );
+
+        guests.forEach(g => {
+          stmt.run(g.event_id, g.name, g.nome_normalizado);
+        });
+
+        stmt.finalize(() => {
+          fs.unlinkSync(filePath);
+          res.json({
+            message: "Convidados importados com sucesso",
+            total: guests.length
+          });
+        });
+      });
+    });
 }
 
 module.exports = {
   listGuests,
   createGuest,
-  checkinGuest
+  checkin,
+  checkinOverride,
+  totalGuestsByEvent,
+  importGuests
 };
-

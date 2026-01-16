@@ -1,45 +1,65 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Check-in</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+<div id="counter" style="margin-bottom: 10px; font-weight: bold;">
+  Pessoas presentes: <span id="total">0</span>
+</div>
 
-  <div class="container">
-    <h1>Check-in</h1>
+<p>
+  Evento: <strong id="eventoNome">Carregando...</strong>
+</p>
 
-    <form id="checkinForm">
 
-      <label>Evento</label>
-      <select id="event" required>
-        <option value="">Selecione o evento</option>
-        <option value="1">Festa de Aniversário</option>
-        <option value="2">Evento Corporativo</option>
-      </select>
+<!-- 🔹 BOTÃO EXCEDENTES -->
+<button
+  id="btnExcedentes"
+  style="
+    display: none;
+    background: transparent;
+    border: 1px solid #ccc;
+    color: #555;
+    font-size: 12px;
+    padding: 6px 10px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  "
+>
+  Controle de Entradas
+</button>
 
-      <label>Nome do convidado</label>
-      <input
-        type="text"
-        id="name"
-        placeholder="Digite o nome"
-        required
-      />
+<form id="checkinForm" autocomplete="off">
+  <label>Nome do convidado</label>
 
-      <label class="checkbox">
-        <input type="checkbox" id="companion" />
-        Acompanhante
-      </label>
+  <input
+    type="text"
+    id="nome"
+    placeholder="Digite o nome"
+    required
+  />
 
-      <button type="submit">Confirmar Check-in</button>
-    </form>
+  <div
+    id="suggestions"
+    style="
+      border: 1px solid #ccc;
+      display: none;
+      max-height: 150px;
+      overflow-y: auto;
+      background: #fff;
+      position: absolute;
+      width: 300px;
+      z-index: 10;
+    "
+  ></div>
 
-    <p id="message"></p>
-  </div>
+  <button type="submit">Check-in</button>
+</form>
 
-  <script src="script.js"></script>
-</body>
-</html>
+<div id="warning" style="display:none; color: orange; margin-top: 10px;">
+  <span id="warningText"></span><br />
+  <button id="btnProsseguir" style="margin-top: 6px; display:none;">
+    Deseja prosseguir mesmo assim?
+  </button>
+</div>
+
+<script src="./script.js"></script>
+
+
+
 

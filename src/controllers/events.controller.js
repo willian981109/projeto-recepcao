@@ -1,8 +1,9 @@
 const db = require("../database/connection");
 const { eventReportService } = require("../services/report.service");
 
-
+// ===============================
 // LISTAR EVENTOS
+// ===============================
 function listEvents(req, res) {
   const query = `
     SELECT * FROM events
@@ -13,12 +14,13 @@ function listEvents(req, res) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-
     res.json(rows);
   });
 }
 
+// ===============================
 // CRIAR EVENTO
+// ===============================
 function createEvent(req, res) {
   const { name, event_date, max_capacity } = req.body;
 
@@ -45,6 +47,9 @@ function createEvent(req, res) {
   });
 }
 
+// ===============================
+// RELATÓRIO (CONTADOR)
+// ===============================
 function eventReport(req, res) {
   const { id } = req.params;
 
@@ -52,14 +57,72 @@ function eventReport(req, res) {
     if (err) {
       return res.status(400).json({ error: err.message || err });
     }
-
     res.json(report);
   });
 }
 
+function eventEntradasControle(req, res) {
+  const eventId = Number(req.params.id);
+
+  // Dados do evento
+  db.get(
+    `
+    SELECT id, name, max_capacity
+    FROM events
+    WHERE id = ?
+    `,
+    [eventId],
+    (err, event) => {
+      if (err || !event) {
+        return res.status(404).json({ error: "Evento não encontrado" });
+      }
+
+      // Todas as entradas
+      db.all(
+        `
+        SELECT 
+          g.name,
+          ee.fora_lista
+        FROM event_entries ee
+        JOIN guests g ON g.id = ee.guest_id
+        WHERE ee.event_id = ?
+        ORDER BY ee.id
+        `,
+        [eventId],
+        (err, rows) => {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          }
+
+          const entradasLista = rows
+            .filter(r => r.fora_lista === 0)
+            .map(r => r.name);
+
+          const entradasForaLista = rows
+            .filter(r => r.fora_lista === 1)
+            .map(r => r.name);
+
+          res.json({
+            event: {
+              id: event.id,
+              name: event.name,
+              capacity: event.max_capacity,
+              total: rows.length
+            },
+            entradas_lista: entradasLista,
+            entradas_fora_lista: entradasForaLista
+          });
+        }
+      );
+    }
+  );
+}
+
+
 module.exports = {
   listEvents,
   createEvent,
-  eventReport
+  eventReport,
+  eventEntradasControle
 };
 
