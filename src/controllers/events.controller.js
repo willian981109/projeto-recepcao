@@ -42,9 +42,32 @@ function createEvent(req, res) {
 
     res.status(201).json({
       message: "Evento criado com sucesso",
-      event_id: this.lastID
+      id: this.lastID
     });
   });
+}
+
+// ===============================
+// EXCLUIR EVENTO (NOVO)
+// ===============================
+function deleteEvent(req, res) {
+  const { id } = req.params;
+
+  db.run(
+    `DELETE FROM events WHERE id = ?`,
+    [id],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (this.changes === 0) {
+        return res.status(404).json({ error: "Evento não encontrado" });
+      }
+
+      res.json({ message: "Evento excluído com sucesso" });
+    }
+  );
 }
 
 // ===============================
@@ -61,10 +84,12 @@ function eventReport(req, res) {
   });
 }
 
+// ===============================
+// CONTROLE DE ENTRADAS
+// ===============================
 function eventEntradasControle(req, res) {
   const eventId = Number(req.params.id);
 
-  // Dados do evento
   db.get(
     `
     SELECT id, name, max_capacity
@@ -77,7 +102,6 @@ function eventEntradasControle(req, res) {
         return res.status(404).json({ error: "Evento não encontrado" });
       }
 
-      // Todas as entradas
       db.all(
         `
         SELECT 
@@ -118,10 +142,47 @@ function eventEntradasControle(req, res) {
   );
 }
 
+// ===============================
+// ATUALIZAR EVENTO (EDITAR)
+// ===============================
+function updateEvent(req, res) {
+  const { id } = req.params;
+  const { name, event_date, max_capacity } = req.body;
+
+  if (!name || !event_date || !max_capacity) {
+    return res.status(400).json({
+      error: "Nome, data e capacidade são obrigatórios"
+    });
+  }
+
+  const query = `
+    UPDATE events
+    SET name = ?, event_date = ?, max_capacity = ?
+    WHERE id = ?
+  `;
+
+  db.run(
+    query,
+    [name, event_date, max_capacity, id],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (this.changes === 0) {
+        return res.status(404).json({ error: "Evento não encontrado" });
+      }
+
+      res.json({ message: "Evento atualizado com sucesso" });
+    }
+  );
+}
 
 module.exports = {
   listEvents,
   createEvent,
+  deleteEvent,
+  updateEvent,           
   eventReport,
   eventEntradasControle
 };

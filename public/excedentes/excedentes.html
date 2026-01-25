@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Controle de Entradas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="/static/excedentes/excedentes.css">
+</head>
+<body>
+
+  <main class="container">
+
+    <h1 class="title">Controle de Entradas</h1>
+
+    <p class="evento">
+      Evento: <span id="eventoNome"></span>
+    </p>
+
+    <p class="info">
+      Convidados: <span id="capacidade"></span><br>
+      Presentes: <span id="totalPresentes"></span>
+    </p>
+
+    <!-- LISTA NA LISTA -->
+    <button class="btn-toggle" id="btnLista">
+      Nomes que estão na lista (<span id="countLista">0</span>)
+    </button>
+
+    <div class="box-list" id="boxLista">
+      <input
+        type="text"
+        id="searchLista"
+        placeholder="Buscar nome..."
+        class="search-input"
+      />
+      <ul id="listaEntradas"></ul>
+    </div>
+
+    <!-- LISTA FORA -->
+    <button class="btn-toggle" id="btnFora">
+      Nomes fora da lista (<span id="countFora">0</span>)
+    </button>
+
+    <div class="box-list" id="boxFora">
+      <input
+        type="text"
+        id="searchFora"
+        placeholder="Buscar nome..."
+        class="search-input"
+      />
+      <ul id="listaFora"></ul>
+    </div>
+
+    <button class="btn-logout" id="btnLogout">
+      Logout
+    </button>
+
+  </main>
+
+  <script type="module" src="/static/excedentes/excedentes.js"></script>
+</body>
+</html>

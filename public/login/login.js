@@ -1,4 +1,9 @@
+import { saveToken, saveUser } from "/static/auth.js";
+
 console.log("LOGIN.JS CARREGADO");
+
+const btnLogin = document.getElementById("btnLogin");
+btnLogin.addEventListener("click", login);
 
 function login() {
   const username = document.getElementById("username").value;
@@ -15,7 +20,10 @@ function login() {
     },
     body: JSON.stringify({ username, password })
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error("Falha no login");
+      return res.json();
+    })
     .then(data => {
       if (data.error) {
         message.textContent = data.error;
@@ -23,14 +31,23 @@ function login() {
         return;
       }
 
-      // 🔐 salvar token e usuário
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      /* ===============================
+         LIMPA SESSÃO ANTIGA
+      ================================ */
+      sessionStorage.clear();
+
+      /* ===============================
+         SALVA AUTENTICAÇÃO
+      ================================ */
+      saveToken(data.token);
+      saveUser(data.user);
 
       message.textContent = "Login realizado com sucesso!";
       message.style.color = "green";
 
-      // 🔁 REDIRECIONAMENTO CORRETO (POR ROTAS)
+      /* ===============================
+         REDIRECIONAMENTO
+      ================================ */
       switch (data.user.role) {
         case "ADMIN":
           window.location.href = "/admin";
@@ -45,13 +62,13 @@ function login() {
           break;
 
         default:
-          message.textContent = "Perfil de usuário não reconhecido";
+          message.textContent = "Perfil não reconhecido";
           message.style.color = "red";
       }
     })
     .catch(err => {
       console.error(err);
-      message.textContent = "Erro ao conectar com o servidor";
+      message.textContent = "Usuário ou senha inválidos";
       message.style.color = "red";
     });
 }

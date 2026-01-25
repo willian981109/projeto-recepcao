@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Check-In</title>
+
+  <link rel="stylesheet" href="/static/checkin/style.css" />
+</head>
+<body>
+
+  <main class="checkin-container">
+
+    <h1 class="title">Check-In</h1>
+
+    <h2 class="event-name" id="eventoNome">
+      Aniversário Maria 90 anos
+    </h2>
+
+    <p class="total">
+      Total presentes: <span id="total">30</span>
+    </p>
+
+    <form id="checkinForm" autocomplete="off" class="checkin-form">
+
+      <label for="nome">Nome do convidado*</label>
+
+      <input
+        type="text"
+        id="nome"
+        placeholder="Digite o nome"
+        required
+      />
+
+      <div id="suggestions"></div>
+
+      <button type="submit" class="btn-primary">
+        Check-In
+      </button>
+
+      <p id="statusMsg" class="status-msg"></p>
+
+    </form>
+
+    <!-- BOTÕES CENTRALIZADOS -->
+    <div class="action-buttons">
+      <button id="btnExcedentes" class="btn-secondary">
+        Controle de entradas
+      </button>
+
+      <button id="btnCriancas" class="btn-secondary">
+        Crianças 6+
+      </button>
+    </div>
+
+    <!-- LOGOUT FIXO -->
+    <button id="btnLogout" class="btn-logout-fixed">
+      Logout
+    </button>
+
+    <!-- aviso fora da lista -->
+    <div id="warning">
+      <span id="warningText"></span><br />
+      <button id="btnProsseguir">Deseja prosseguir mesmo assim?</button>
+    </div>
+
+  </main>
+
+  <script type="module" src="/static/checkin/script.js"></script>
+</body>
+</html>

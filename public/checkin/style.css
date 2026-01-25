@@ -1,0 +1,144 @@
+/* ===== BASE ===== */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #000;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== CONTAINER ===== */
+.checkin-container {
+  width: 100%;
+  max-width: 360px;
+  padding: 24px;
+  text-align: center;
+}
+
+/* ===== TÍTULOS ===== */
+.title {
+  color: #d4af37;
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.event-name {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.total {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* ===== FORM ===== */
+.checkin-form label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.checkin-form input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+/* ===== BOTÃO PRINCIPAL ===== */
+.btn-primary {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  background: linear-gradient(135deg, #f6d365, #d4af37);
+  color: #000;
+}
+
+/* ===== STATUS ===== */
+.status-msg {
+  display: none;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.status-success {
+  color: #4caf50;
+}
+
+.status-error {
+  color: #ff9800;
+}
+
+/* ===== BOTÕES CENTRALIZADOS ===== */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.action-buttons button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #f6d365, #d4af37);
+  color: #000;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* ===== LOGOUT FIXO ===== */
+.btn-logout-fixed {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #f6d365, #d4af37);
+  color: #000;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* ===== AUTOCOMPLETE ===== */
+#suggestions {
+  display: none;
+  background: #fff;
+  color: #000;
+  border-radius: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
+#suggestions div {
+  padding: 6px;
+  cursor: pointer;
+}
+
+#suggestions div:hover {
+  background: #eee;
+}
+
+/* ===== AVISO ===== */
+#warning {
+  display: none;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #ff9800;
+}
+
+#btnProsseguir {
+  margin-top: 6px;
+  padding: 6px 10px;
+}

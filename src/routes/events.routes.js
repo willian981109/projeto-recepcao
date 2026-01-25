@@ -7,11 +7,12 @@ const {
   listEvents,
   createEvent,
   eventReport,
-  eventEntradasControle
+  eventEntradasControle,
+  deleteEvent,
+  updateEvent          // ✅ IMPORTADO
 } = require("../controllers/events.controller");
 
 // 🔎 LISTAR EVENTOS
-// ADMIN + RECEPÇÃO + CONTADOR
 router.get(
   "/",
   authorize(["ADMIN", "RECEPCAO", "CONTADOR"]),
@@ -19,27 +20,38 @@ router.get(
 );
 
 // ➕ CRIAR EVENTO
-// ADMIN
 router.post(
   "/",
   authorize(["ADMIN"]),
   createEvent
 );
 
-// 📊 RELATÓRIO (contador)
+// ✏️ EDITAR EVENTO (NOVO)
+router.put(
+  "/:id",
+  authorize(["ADMIN"]),
+  updateEvent
+);
+
+// 🗑️ EXCLUIR EVENTO
+router.delete(
+  "/:id",
+  authorize(["ADMIN"]),
+  deleteEvent
+);
+
+// 📊 RELATÓRIO (CONTADOR)
 router.get(
   "/:id/report",
   authorize(["CONTADOR"]),
   eventReport
 );
 
-// 📋 CONTROLE DE ENTRADAS (ADMIN + RECEPÇÃO)
+// 📋 CONTROLE DE ENTRADAS
 router.get(
   "/:id/entradas",
-  authorize(["ADMIN", "RECEPCAO"]),
+  authorize(["ADMIN", "RECEPCAO", "CONTADOR", "CHECKIN"]),
   eventEntradasControle
 );
 
-
 module.exports = router;
-

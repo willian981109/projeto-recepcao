@@ -1,6 +1,5 @@
 const normalizarNome = require("../utils/normalizarNome");
 const db = require("../database/connection");
-const { checkinGuestService } = require("../services/checkin.service");
 const fs = require("fs");
 const csv = require("csv-parser");
 
@@ -15,6 +14,7 @@ function listGuests(req, res) {
     SELECT *
     FROM guests
     WHERE event_id = ?
+      AND origem_lista = 1
     ORDER BY created_at DESC
     `,
     [Number(eventId)],
@@ -23,13 +23,14 @@ function listGuests(req, res) {
         console.error("LIST GUESTS ERRO:", err);
         return res.status(500).json({ error: err.message });
       }
+
       res.json(rows);
     }
   );
 }
 
 // ===============================
-// CRIAR CONVIDADO MANUAL
+// CRIAR CONVIDADO MANUAL (DA LISTA)
 // ===============================
 function createGuest(req, res) {
   const { eventId } = req.params;
@@ -49,9 +50,10 @@ function createGuest(req, res) {
       nome_normalizado,
       document,
       has_companion,
-      children_count
+      children_count,
+      origem_lista
     )
-    VALUES (?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, 1)
     `,
     [
       Number(eventId),
@@ -91,17 +93,17 @@ function checkin(req, res) {
   const nomeNormalizado = normalizarNome(nome);
 
   db.serialize(() => {
-    // 1️⃣ buscar convidado
-db.get(
-  `
-  SELECT id
-  FROM guests
-  WHERE nome_normalizado = ?
-    AND event_id = ?
-    AND origem_lista = 1
-  `,
-  [nomeNormalizado, eventId],
-  (err, guest) => {
+    // 1️⃣ buscar convidado DA LISTA
+    db.get(
+      `
+      SELECT id
+      FROM guests
+      WHERE nome_normalizado = ?
+        AND event_id = ?
+        AND origem_lista = 1
+      `,
+      [nomeNormalizado, eventId],
+      (err, guest) => {
         if (err) {
           return res.status(500).json({ error: err.message });
         }
@@ -155,7 +157,7 @@ db.get(
 }
 
 // ===============================
-// CHECK-IN FORA DA LISTA (PROSSEGUIR)
+// CHECK-IN FORA DA LISTA (OVERRIDE)
 // ===============================
 function checkinOverride(req, res) {
   const { nome, evento_id } = req.body;
@@ -163,14 +165,14 @@ function checkinOverride(req, res) {
   const nomeNormalizado = normalizarNome(nome);
 
   db.serialize(() => {
-    // 1️⃣ criar convidado fora da lista
-  db.run(
-  `
-  INSERT INTO guests (event_id, name, nome_normalizado, origem_lista)
-  VALUES (?, ?, ?, 0)
-  `,
-  [eventId, nome, nomeNormalizado],
-  function () {
+    // 1️⃣ criar convidado FORA DA LISTA
+    db.run(
+      `
+      INSERT INTO guests (event_id, name, nome_normalizado, origem_lista)
+      VALUES (?, ?, ?, 0)
+      `,
+      [eventId, nome, nomeNormalizado],
+      function () {
         const guestId = this.lastID;
 
         // 2️⃣ buscar total + capacidade
@@ -237,7 +239,7 @@ function totalGuestsByEvent(req, res) {
 }
 
 // ===============================
-// IMPORTAR CONVIDADOS CSV
+// IMPORTAR CONVIDADOS CSV (DA LISTA)
 // ===============================
 function importGuests(req, res) {
   const { eventId } = req.params;
@@ -265,8 +267,8 @@ function importGuests(req, res) {
       db.serialize(() => {
         const stmt = db.prepare(
           `
-          INSERT INTO guests (event_id, name, nome_normalizado)
-          VALUES (?, ?, ?)
+          INSERT INTO guests (event_id, name, nome_normalizado, origem_lista)
+          VALUES (?, ?, ?, 1)
           `
         );
 

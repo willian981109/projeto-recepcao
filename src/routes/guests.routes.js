@@ -23,14 +23,14 @@ router.post(
   guestsController.checkinOverride
 );
 
-
 /**
  * LISTAR CONVIDADOS DO EVENTO
  * ADMIN e RECEPÇÃO
+ * (autocomplete / validação)
  */
 router.get(
   "/events/:eventId/guests",
-  authorize(["ADMIN", "RECEPCAO"]),
+  authorize(["ADMIN", "RECEPCAO", "CHECKIN"]),
   guestsController.listGuests
 );
 
@@ -42,17 +42,6 @@ router.post(
   "/events/:eventId/guests",
   authorize(["ADMIN", "RECEPCAO"]),
   guestsController.createGuest
-);
-
-
-/**
- * TOTAL DE CONVIDADOS DO EVENTO
- * ADMIN, RECEPÇÃO e CONTADOR
- */
-router.get(
-  "/events/:eventId/total",
-  authorize(["ADMIN", "RECEPCAO", "CONTADOR"]),
-  guestsController.totalGuestsByEvent
 );
 
 /**
@@ -67,4 +56,3 @@ router.post(
 );
 
 module.exports = router;
-

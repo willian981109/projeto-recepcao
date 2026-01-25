@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Selecionar Evento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="/static/selecionar-evento/selecionar-evento.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <div class="top-bar">
+      <h1>Selecione o evento</h1>
+      <button id="btnLogout">Sair</button>
+    </div>
+
+    <div class="event-list" id="eventList">
+      <!-- Exemplo de card -->
+      <div class="event">
+        <strong>Aniversário Maria</strong>
+        <span>15/02/2026 • 19:00</span>
+      </div>
+
+      <div class="event">
+        <strong>Casamento João & Ana</strong>
+        <span>20/03/2026 • 18:00</span>
+      </div>
+
+      <!-- Se não tiver evento -->
+      <!--
+      <div class="empty">
+        Nenhum evento agendado
+      </div>
+      -->
+    </div>
+
+  </div>
+
+  <script type="module" src="/static/selecionar-evento/selecionar-evento.js"></script>
+</body>
+</html>

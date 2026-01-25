@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Criar Evento</title>
+
+  <link rel="stylesheet" href="/static/admin/admin.css">
+</head>
+<body>
+
+  <!-- TOPO -->
+  <header class="top">
+    <span class="hello">Olá, Mary!</span>
+    <button class="events-btn">Eventos</button>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="card">
+
+    <h1 class="title">📅 Criar evento</h1>
+
+    <label>Nome do evento*</label>
+    <input type="text" id="eventNameInput" placeholder="Ex: Casamento João & Maria" />
+
+    <label>Data*</label>
+    <input type="date" />
+
+    <label>Quantidade de convidados*</label>
+    <input type="number" placeholder="Ex: 100" />
+
+    <!-- CSV -->
+    <label>Importar listagem (.csv)</label>
+
+    <label class="file-wrapper">
+      <input type="file" id="csvInput" accept=".csv" />
+      <span id="fileButtonText">Escolher arquivo</span>
+    </label>
+
+     <p id="formMsg" class="form-msg hidden"></p>
+     
+    <button class="btn-create">Criar evento</button>
+    <button class="btn-recepcao">Iniciar Recepção</button>
+
+  </main>
+
+  <!-- LOGOUT -->
+  <footer class="logout-area">
+    <button class="btn-logout">Logout</button>
+  </footer>
+
+  <script type="module" src="/static/admin/admin.js"></script>
+</body>
+</html>
+
