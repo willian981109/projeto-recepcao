@@ -56,6 +56,8 @@ A lógica de negócio é desacoplada da camada de rotas, facilitando futura refa
 - Tratamento básico de erros
 - Controle de fluxo assíncrono
 
+  ---
+  
   🔄 Roadmap Técnico (Evolução Planejada)
 
 - Refatoração completa para TypeScript
@@ -68,12 +70,16 @@ A lógica de negócio é desacoplada da camada de rotas, facilitando futura refa
 
   ---
 
+---
+
 ## 📸 Preview
 
-![Preview](assets/images/tela.png)
-![Preview](assets/images/tela2.png)
-![Preview](assets/images/tela3.png)
-![Preview](assets/images/tela4.png)
-![Preview](assets/images/tela5.png)
+<p align="center">
+  <img src="assets/images/tela.png" width="45%">
+  <img src="assets/images/tela2.png" width="45%"><br><br>
+  <img src="assets/images/tela3.png" width="45%">
+  <img src="assets/images/tela4.png" width="45%"><br><br>
+  <img src="assets/images/tela5.png" width="60%">
+</p>
 
 ---
