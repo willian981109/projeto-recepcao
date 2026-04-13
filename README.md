@@ -1,9 +1,10 @@
-# 🎯 Recepção Digital - Sistema de Gestão de Eventos
+# 🎯 Sistema de Gestão de Eventos (Check-in Digital)
 
 
-Sistema de recepção e controle de convidados desenvolvido para gerenciamento de eventos.
+Sistema completo para gerenciamento de eventos com controle de convidados e check-in em tempo real.
 
-O projeto permite cadastro, importação e controle de presença de convidados de forma prática e organizada.
+ Projeto desenvolvido com foco em resolver problemas reais de organização de eventos, permitindo cadastro, importação e controle de presença de convidados de forma prática e eficiente.
+
 
 ---
 
@@ -64,9 +65,9 @@ A lógica de negócio é desacoplada da camada de rotas, facilitando futura refa
 - Implementação de DTOs e tipagem forte
 - Introdução de validação com middleware (ex: Zod ou Joi)
 - Autenticação baseada em JWT
-- Implementação de testes automatizados
+- Deploy em ambiente cloud
 - Migração para banco relacional escalável (PostgreSQL)
-- Aplicação de princípios de Clean Architecture
+- Melhorias na interface (UX/UI)
 
   ---
 
