@@ -7,4 +7,4 @@ function normalizarNome(nome) {
     .replace(/\s+/g, " ");
 }
 
-module.exports = normalizarNome;
+export default normalizarNome;

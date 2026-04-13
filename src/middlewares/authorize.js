@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+import jwt from 'jsonwebtoken';
 
 /**
  * Middleware de autorização por JWT + role
@@ -50,6 +50,6 @@ function authorize(allowedRoles = []) {
   };
 }
 
-module.exports = authorize;
+export default authorize;
 
 

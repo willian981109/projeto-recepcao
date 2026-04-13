@@ -1,5 +1,5 @@
-const db = require("../database/connection");
-const { eventReportService } = require("../services/report.service");
+import db from '../database/connection.js';
+import  eventReportService  from '../services/report.service.js';
 
 // ===============================
 // LISTAR EVENTOS
@@ -178,7 +178,7 @@ function updateEvent(req, res) {
   );
 }
 
-module.exports = {
+export {
   listEvents,
   createEvent,
   deleteEvent,

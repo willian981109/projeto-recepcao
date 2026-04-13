@@ -1,4 +1,4 @@
-const db = require("../database/connection");
+import db from '../database/connection.js';
 
 function eventReportService(eventId, callback) {
   // Buscar dados do evento
@@ -35,4 +35,4 @@ function eventReportService(eventId, callback) {
   );
 }
 
-module.exports = { eventReportService };
+export default eventReportService;

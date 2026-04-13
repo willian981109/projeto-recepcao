@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const { loginService } = require("../services/auth.service");
+import jwt from 'jsonwebtoken';
+import  loginService   from '../services/auth.service.js';
 
 function login(req, res) {
   const { username, password } = req.body;
@@ -34,4 +34,4 @@ function login(req, res) {
   });
 }
 
-module.exports = { login };
+export default login;

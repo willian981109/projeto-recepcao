@@ -1,12 +1,11 @@
-const express = require("express");
-const router = express.Router();
-const multer = require("multer");
+import express from 'express';
+import multer from 'multer';
 
-const authorize = require("../middlewares/authorize");
-const guestsController = require("../controllers/guests.controller");
+import authorize from '../middlewares/authorize.js';
+import * as guestsController from '../controllers/guests.controller.js';
 
 const upload = multer({ dest: "uploads/" });
-
+const router = express.Router();
 /**
  * CHECK-IN
  * ADMIN e RECEPÇÃO
@@ -55,4 +54,4 @@ router.post(
   guestsController.importGuests
 );
 
-module.exports = router;
+export default router;

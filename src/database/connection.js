@@ -1,10 +1,15 @@
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+import sqlite3 from "sqlite3";
+sqlite3.verbose();
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-// log para conferir o banco usado
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// log pra conferir o banco usado
 console.log("USANDO BANCO:", path.join(__dirname, "database.sqlite"));
 
-// caminho do banco
 const db = new sqlite3.Database(
   path.join(__dirname, "database.sqlite"),
   (err) => {
@@ -16,4 +21,4 @@ const db = new sqlite3.Database(
   }
 );
 
-module.exports = db;
+export default db;

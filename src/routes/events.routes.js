@@ -1,16 +1,16 @@
-const express = require("express");
+import express from 'express';
 const router = express.Router();
 
-const authorize = require("../middlewares/authorize");
+import authorize from '../middlewares/authorize.js';
 
-const {
+import {
   listEvents,
   createEvent,
   eventReport,
   eventEntradasControle,
   deleteEvent,
-  updateEvent          // ✅ IMPORTADO
-} = require("../controllers/events.controller");
+  updateEvent         
+} from '../controllers/events.controller.js';
 
 // 🔎 LISTAR EVENTOS
 router.get(
@@ -54,4 +54,4 @@ router.get(
   eventEntradasControle
 );
 
-module.exports = router;
+export default router;

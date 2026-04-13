@@ -1,4 +1,4 @@
-const db = require("./connection");
+import db from './connection.js';
 
 db.run(
   "INSERT INTO users (username, password) VALUES (?, ?)",

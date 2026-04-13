@@ -1,4 +1,4 @@
-const db = require("../database/connection");
+import db from '../database/connection.js';
 
 function loginService(username, password, callback) {
   db.get(
@@ -25,4 +25,4 @@ function loginService(username, password, callback) {
   );
 }
 
-module.exports = { loginService };
+export default loginService;

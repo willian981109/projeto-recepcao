@@ -1,7 +1,7 @@
-const normalizarNome = require("../utils/normalizarNome");
-const db = require("../database/connection");
-const fs = require("fs");
-const csv = require("csv-parser");
+import normalizarNome from '../utils/normalizarNome.js';
+import db from '../database/connection.js';
+import fs from 'fs';
+import csv from 'csv-parser';
 
 // ===============================
 // LISTAR CONVIDADOS POR EVENTO
@@ -287,7 +287,7 @@ function importGuests(req, res) {
     });
 }
 
-module.exports = {
+export {
   listGuests,
   createGuest,
   checkin,

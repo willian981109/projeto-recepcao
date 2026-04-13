@@ -1,13 +1,19 @@
-require("dotenv").config();
+import "dotenv/config"; 
 
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
+import express from'express';
+import cors from 'cors';
+import path from 'path';
+
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // rotas de API (backend)
-const guestsRoutes = require("./routes/guests.routes");
-const eventsRoutes = require("./routes/events.routes");
-const authRoutes = require("./routes/auth.routes");
+import  guestsRoutes  from './routes/guests.routes.js';
+import  eventsRoutes  from './routes/events.routes.js';
+import  authRoutes  from './routes/auth.routes.js';
 
 const app = express();
 
@@ -81,5 +87,4 @@ app.get("/checkin/entrada", (req, res) => {
 app.use((req, res) => {
   res.status(404).send("Página não encontrada");
 });
-
-module.exports = app;
+export default app;

@@ -1,4 +1,4 @@
-const db = require("../database/connection");
+import db from '../database/connection.js';
 
 function checkinGuestService(guestId, callback) {
   // 1. Buscar convidado
@@ -65,4 +65,4 @@ function checkinGuestService(guestId, callback) {
   );
 }
 
-module.exports = { checkinGuestService };
+export default checkinGuestService;

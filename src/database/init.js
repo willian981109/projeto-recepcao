@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const db = require("./connection");
+import fs from 'fs';
+import path from 'path';
+import db from './connection.js';
 
 // Caminho do arquivo schema.sql
 const schemaPath = path.resolve(__dirname, "schema.sql");
